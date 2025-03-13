@@ -19,20 +19,21 @@
   min-height: 100vh;
   background-color: var(--background-color);
   padding: 0.5rem;
+  overflow: hidden;
 }
 
 .navbar {
   background-color: var(--primary-color) !important;
   box-shadow: 0 2px 8px rgba(44, 57, 48, 0.2);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   border-radius: 8px;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
 }
 
 .navbar-brand {
   color: white !important;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -40,7 +41,8 @@
   color: rgba(255, 255, 255, 0.9) !important;
   transition: all 0.3s ease;
   position: relative;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
 }
 
 .nav-link:hover {
@@ -68,7 +70,7 @@
 .card {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   border: none;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   border-radius: 8px;
   transition: all 0.3s ease;
   background-color: var(--card-background);
@@ -78,7 +80,7 @@
 
 /* Map Container */
 #map {
-  height: 400px;
+  height: 250px;
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
@@ -89,7 +91,7 @@
 /* Card containing map */
 .card:has(#map) {
   height: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .card:has(#map) .card-body {
@@ -100,25 +102,46 @@
 
 /* Chart container */
 .card:has(.chart-container) {
-  height: auto;
-  margin-bottom: 1rem;
+  height: 80px;
+  margin-bottom: 0.25rem;
+  width: 100%;
+  position: relative;
+  background: var(--card-background);
+  border-top: 1px solid rgba(0,0,0,0.08);
 }
 
 .card:has(.chart-container) .card-body {
-  height: auto;
-  padding: 0.5rem;
+  height: calc(100% - 1rem);
+  padding: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-container {
+  width: 95%;
+  height: 100%;
+  margin: 0 auto;
+  transform: scale(0.8);
+  transform-origin: center;
 }
 
 /* Remove the fixed height rules for cards */
 .card:has(#map),
 .card:has(.chart-container) {
   height: auto;
+  position: relative;
 }
 
 .card:has(#map) .card-body,
 .card:has(.chart-container) .card-body {
   height: auto;
   overflow-y: visible;
+}
+
+/* Adjust sidebar margin */
+.sidebar {
+  margin-bottom: 80px;
 }
 
 .card::before {
@@ -143,23 +166,16 @@
 }
 
 .card-header {
-  background-color: var(--card-background);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  padding: 0.5rem;
+  padding: 0.25rem;
   border-radius: 8px 8px 0 0 !important;
-  position: relative;
-  z-index: 1;
 }
 
 .card-header h5 {
-  color: var(--primary-color);
-  font-weight: 600;
-  margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .card-body {
-  padding: 0.5rem;
+  padding: 0.25rem;
   position: relative;
   z-index: 1;
 }
@@ -187,109 +203,71 @@
 
 /* Field Health Metrics */
 .field-health-metrics {
-  padding: 0.25rem;
+  padding: 0.5rem;
 }
 
 .health-card {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
   padding: 0.5rem;
-  height: 100%;
-  box-shadow: 0 2px 4px rgba(44, 57, 48, 0.1);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(162, 123, 92, 0.1);
 }
 
 .health-card h6 {
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
 }
 
 .health-score {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.2rem;
   margin-bottom: 0.25rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .health-status {
   font-size: 0.8rem;
-  font-weight: 500;
   margin-bottom: 0.25rem;
-  color: var(--text-primary);
 }
 
 /* Statistics Section */
 .stats-section {
-  color: var(--primary-color);
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid rgba(44, 57, 48, 0.1);
-  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .stats-group {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
   padding: 0.5rem;
-  border: 1px solid rgba(162, 123, 92, 0.1);
 }
 
 .stats-group p {
   margin-bottom: 0.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 /* Recommendations List */
 .recommendations-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  max-height: 300px;
 }
 
 .recommendation-item {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
   padding: 0.5rem;
-  box-shadow: 0 2px 4px rgba(44, 57, 48, 0.1);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(162, 123, 92, 0.1);
 }
 
 .recommendation-header {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-bottom: 0.25rem;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .priority-badge {
-  padding: 0.1rem 0.4rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.recommendation-description {
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-  line-height: 1.2;
+  padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
 }
 
+.recommendation-description {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
 .recommendation-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.7rem;
-  color: var(--text-secondary);
+  font-size: 0.8rem;
 }
 
 /* Responsive Adjustments */
@@ -355,4 +333,14 @@
 /* Spinner Color */
 .spinner-border.text-primary {
   color: var(--primary-color) !important;
+}
+
+/* Row Spacing */
+.row {
+  margin-bottom: 0.25rem;
+}
+
+/* Container Fluid */
+.container-fluid {
+  padding: 0.25rem;
 } 
