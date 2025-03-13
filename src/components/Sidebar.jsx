@@ -50,6 +50,35 @@ function Sidebar({
     <>
       <div className="card mb-4">
         <div className="card-header">
+          <h5>Date Range</h5>
+        </div>
+        <div className="card-body">
+          <div className="d-flex flex-column gap-2">
+            <div>
+              <label className="form-label">Start Date</label>
+              <input 
+                type="date" 
+                className="form-control" 
+                value={dateRange.startDate}
+                onChange={(e) => handleDateChange('startDate', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="form-label">End Date</label>
+              <input 
+                type="date" 
+                className="form-control" 
+                value={dateRange.endDate}
+                onChange={(e) => handleDateChange('endDate', e.target.value)}
+              />
+            </div>
+            <button className="btn btn-primary">Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card mb-4">
+        <div className="card-header">
           <h5>Fields</h5>
         </div>
         <div className="card-body">
@@ -75,7 +104,7 @@ function Sidebar({
         </div>
       </div>
 
-      <div className="card mb-4">
+      <div className="card">
         <div className="card-header">
           <h5>Satellite Sources</h5>
         </div>
@@ -140,35 +169,6 @@ function Sidebar({
               SMAP (Soil Moisture)
             </label>
           </div>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="card-header">
-          <h5>Date Range</h5>
-        </div>
-        <div className="card-body">
-          <div className="mb-3">
-            <label htmlFor="start-date" className="form-label">Start Date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="start-date"
-              value={dateRange.startDate}
-              onChange={(e) => handleDateChange('startDate', e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="end-date" className="form-label">End Date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="end-date"
-              value={dateRange.endDate}
-              onChange={(e) => handleDateChange('endDate', e.target.value)}
-            />
-          </div>
-          <button className="btn btn-primary">Apply</button>
         </div>
       </div>
     </>

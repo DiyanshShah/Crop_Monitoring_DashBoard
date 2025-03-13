@@ -26,41 +26,41 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
   const [selectedIndex, setSelectedIndex] = useState('ndvi');
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
+  const layersRef = useRef({});
 
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map('map').setView([20.5937, 78.9629], 5);
+      mapInstance.current = mapRef.current;
       
       // Add satellite layers
-      const landsat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery © Esri',
-        maxZoom: 19,
-        name: 'Landsat 8/9'
-      });
-
-      const sentinel = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery © Esri',
-        maxZoom: 19,
-        name: 'Sentinel-2'
-      });
-
-      const modis = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery © Esri',
-        maxZoom: 19,
-        name: 'MODIS'
-      });
-
-      const viirs = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery © Esri',
-        maxZoom: 19,
-        name: 'VIIRS/GOES'
-      });
-
-      const smap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery © Esri',
-        maxZoom: 19,
-        name: 'SMAP Soil Moisture'
-      });
+      layersRef.current = {
+        landsat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Imagery © Esri',
+          maxZoom: 19,
+          name: 'Landsat 8/9'
+        }),
+        sentinel: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Imagery © Esri',
+          maxZoom: 19,
+          name: 'Sentinel-2'
+        }),
+        modis: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Imagery © Esri',
+          maxZoom: 19,
+          name: 'MODIS'
+        }),
+        viirs: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Imagery © Esri',
+          maxZoom: 19,
+          name: 'VIIRS/GOES'
+        }),
+        smap: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Imagery © Esri',
+          maxZoom: 19,
+          name: 'SMAP Soil Moisture'
+        })
+      };
 
       // Add reference overlay for labels
       const referenceOverlay = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
@@ -69,16 +69,16 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
       });
 
       // Add layers to map
-      landsat.addTo(mapRef.current);
+      layersRef.current.landsat.addTo(mapRef.current);
       referenceOverlay.addTo(mapRef.current);
 
       // Add layer control
       const baseMaps = {
-        'Landsat 8/9 (30m)': landsat,
-        'Sentinel-2 (10-20m)': sentinel,
-        'MODIS (250m-1km)': modis,
-        'VIIRS/GOES (Rapid Update)': viirs,
-        'SMAP (Soil Moisture)': smap
+        'Landsat 8/9 (30m)': layersRef.current.landsat,
+        'Sentinel-2 (10-20m)': layersRef.current.sentinel,
+        'MODIS (250m-1km)': layersRef.current.modis,
+        'VIIRS/GOES (Rapid Update)': layersRef.current.viirs,
+        'SMAP (Soil Moisture)': layersRef.current.smap
       };
 
       const overlayMaps = {
@@ -98,6 +98,25 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
       }
     };
   }, []);
+
+  // Handle satellite source changes
+  useEffect(() => {
+    if (mapRef.current && layersRef.current) {
+      // Remove all satellite layers
+      Object.values(layersRef.current).forEach(layer => {
+        if (mapRef.current.hasLayer(layer)) {
+          mapRef.current.removeLayer(layer);
+        }
+      });
+
+      // Add selected layers
+      if (satelliteSources.landsat) layersRef.current.landsat.addTo(mapRef.current);
+      if (satelliteSources.sentinel) layersRef.current.sentinel.addTo(mapRef.current);
+      if (satelliteSources.modis) layersRef.current.modis.addTo(mapRef.current);
+      if (satelliteSources.viirs) layersRef.current.viirs.addTo(mapRef.current);
+      if (satelliteSources.smap) layersRef.current.smap.addTo(mapRef.current);
+    }
+  }, [satelliteSources]);
 
   useEffect(() => {
     if (selectedField && mapInstance.current) {
@@ -224,10 +243,14 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
     }
   ];
 
+  const handleDateChange = (type, value) => {
+    // Implement date change handling logic here
+  };
+
   return (
     <>
       <div className="row">
-        <div className="col-md-6 mb-4">
+        <div className="col-md-8 mb-4">
           <div className="card h-100">
             <div className="card-header">
               <h5>Field Map</h5>
@@ -238,7 +261,7 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
           </div>
         </div>
 
-        <div className="col-md-6 mb-4">
+        <div className="col-md-4 mb-4">
           <div className="card h-100">
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5>Field Health</h5>
@@ -269,61 +292,31 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
               {selectedField ? (
                 <div className="field-health-metrics">
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-12 mb-3">
                       <div className="health-card">
                         <h6>Soil Health</h6>
                         <div className="health-score" style={{ color: mockFieldHealth.soilHealth.color }}>
                           {mockFieldHealth.soilHealth.score}%
                         </div>
                         <div className="health-status">{mockFieldHealth.soilHealth.status}</div>
-                        <div className="health-metrics">
-                          <div className="metric">
-                            <span>pH:</span>
-                            <span>{mockFieldHealth.soilHealth.metrics.pH}</span>
-                          </div>
-                          <div className="metric">
-                            <span>Organic Matter:</span>
-                            <span>{mockFieldHealth.soilHealth.metrics.organicMatter}</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 mb-3">
                       <div className="health-card">
                         <h6>Crop Health</h6>
                         <div className="health-score" style={{ color: mockFieldHealth.cropHealth.color }}>
                           {mockFieldHealth.cropHealth.score}%
                         </div>
                         <div className="health-status">{mockFieldHealth.cropHealth.status}</div>
-                        <div className="health-metrics">
-                          <div className="metric">
-                            <span>Growth Stage:</span>
-                            <span>{mockFieldHealth.cropHealth.metrics.growthStage}</span>
-                          </div>
-                          <div className="metric">
-                            <span>Canopy Cover:</span>
-                            <span>{mockFieldHealth.cropHealth.metrics.canopyCover}</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12">
                       <div className="health-card">
                         <h6>Moisture Status</h6>
                         <div className="health-score" style={{ color: mockFieldHealth.moisture.color }}>
                           {mockFieldHealth.moisture.score}%
                         </div>
                         <div className="health-status">{mockFieldHealth.moisture.status}</div>
-                        <div className="health-metrics">
-                          <div className="metric">
-                            <span>Soil Moisture:</span>
-                            <span>{mockFieldHealth.moisture.metrics.soilMoisture}</span>
-                          </div>
-                          <div className="metric">
-                            <span>ET Rate:</span>
-                            <span>{mockFieldHealth.moisture.metrics.evapotranspiration}</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -350,31 +343,20 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
               {selectedField ? (
                 <div className="field-stats">
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <h6 className="stats-section">Field Information</h6>
                       <div className="stats-group">
                         <p><strong>Area:</strong> {mockStats.fieldInfo.area}</p>
                         <p><strong>Crop Type:</strong> {mockStats.fieldInfo.cropType}</p>
-                        <p><strong>Variety:</strong> {mockStats.fieldInfo.variety}</p>
                         <p><strong>Planting Date:</strong> {mockStats.fieldInfo.plantingDate}</p>
                       </div>
                     </div>
-                    <div className="col-md-4">
-                      <h6 className="stats-section">Performance Metrics</h6>
+                    <div className="col-md-6">
+                      <h6 className="stats-section">Performance</h6>
                       <div className="stats-group">
                         <p><strong>Health Score:</strong> {mockStats.performance.healthScore}</p>
                         <p><strong>Moisture Level:</strong> {mockStats.performance.moistureLevel}</p>
                         <p><strong>Last Irrigation:</strong> {mockStats.performance.lastIrrigation}</p>
-                        <p><strong>Fertilizer Applied:</strong> {mockStats.performance.fertilizerApplied}</p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <h6 className="stats-section">Weather Conditions</h6>
-                      <div className="stats-group">
-                        <p><strong>Temperature:</strong> {mockStats.weather.temperature}</p>
-                        <p><strong>Humidity:</strong> {mockStats.weather.humidity}</p>
-                        <p><strong>Rainfall:</strong> {mockStats.weather.rainfall}</p>
-                        <p><strong>Wind Speed:</strong> {mockStats.weather.windSpeed}</p>
                       </div>
                     </div>
                   </div>
@@ -398,7 +380,7 @@ function Dashboard({ selectedField, dateRange, satelliteSources }) {
             <div className="card-body">
               {selectedField ? (
                 <div className="recommendations-list">
-                  {mockRecommendations.map((rec, index) => (
+                  {mockRecommendations.slice(0, 3).map((rec, index) => (
                     <div key={index} className="recommendation-item">
                       <div className="recommendation-header">
                         <span className={`priority-badge ${rec.priority.toLowerCase()}`}>
